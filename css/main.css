@@ -30,6 +30,10 @@ body {
     margin-bottom: 5px;
 }
 
+#dashboard header h2 {
+    color: #fff;
+}
+
 #dashboard .cd {
     width: 200px;
     margin: 0 auto;
