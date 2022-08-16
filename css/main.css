@@ -78,6 +78,11 @@ body {
     margin-top: -3px;
 }
 
+.active,
+.activeRepeat {
+    color: #ec1f55;
+}
+
 #dashboard .control .btn-toggle-play i {
     margin-left: 3px;
 }
@@ -86,10 +91,15 @@ body {
     width: 100%;
     opacity: 0.7;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 #playlist {
     padding-top: 434px;
+}
+
+#playlist .song.active {
+    background: #d72958;
 }
 
 #playlist .song {
@@ -100,6 +110,11 @@ body {
     margin-bottom: 8px;
     padding: 15px 20px;
     cursor: pointer;
+    transition: 0.5s;
+}
+
+.song:active {
+    opacity: 0.8;
 }
 
 #playlist .song__img {
@@ -107,6 +122,7 @@ body {
     width: 45px;
     height: 45px;
     border-radius: 50%;
+    margin-top: 5px;
 }
 
 #playlist .song__body {
@@ -124,12 +140,12 @@ body {
 
 #playlist .song__body p {
     font-weight: 300;
-    color: #999;
+    color: #fff;
     font-size: 12px;
 }
 
 #playlist .song__option {
     padding: 16px 10px;
     font-size: 25px;
-    color: #999;
+    color: #fff;
 }

@@ -39,7 +39,9 @@ const songs = [
 ]
 
 const audio = document.getElementById('audio');
-const progress = document.getElementById('progress')
+const progress = document.getElementById('progress');
+const randomBtn = document.getElementById('btn-random');
+const repeatBtn = document.getElementById('btn-repeat');
 let currentIndex = 0;
 
 function start() {
@@ -51,25 +53,13 @@ function start() {
 
     // load dữ liệu bài hát đầu tiên lên UI
     loadFirstSong()
-
-    // next bài hát
-    $('.btn-next').click(() => {
-        nextSong();
-        audio.play()
-    })
-
-    // lùi bài hát
-    $('.btn-back').click(() => {
-        backSong();
-        audio.play()
-    })
 }
 start();
 
 function renderPlayList() {
-    let htmls = songs.map((song) => {
+    let htmls = songs.map((song, index) => {
         return `
-            <div class="song">
+            <div class="song ${index === currentIndex ? 'active' : ''}" onclick="clickPlaySong(${index})">
                <div class="song__img" style="background-image: url('${song.img}')"></div>
                <div class="song__body">
                   <div class="song-title">
@@ -85,6 +75,8 @@ function renderPlayList() {
     })
     document.getElementById('playlist').innerHTML = htmls.join('')
 }
+
+
 
 function handleEvents() {
     // xử lý cd to nhỏ
@@ -149,14 +141,78 @@ function handleEvents() {
         const progressPercent = e.target.value;
         const seekTime = audio.duration / 100 * progressPercent;
         audio.currentTime = seekTime;
+
+        //update lại input tiến độ bài hát
+        audio.ontimeupdate = function () {
+            const loadProgressPercent = Math.round(audio.currentTime / audio.duration * 100);
+            document.getElementById('progress').value = loadProgressPercent;
+        }
     }
 
+    // next bài hát
+    $('.btn-next').click(() => {
+        if ($('#icon-random').attr('class') === 'fa-solid fa-shuffle active') {
+            randomSong();
+        }
+        else {
+            nextSong();
+        }
+        audio.play()
+        renderPlayList()
+        scroolToActiveSong();
+    })
+
+    // lùi bài hát
+    $('.btn-back').click(() => {
+        if ($('#icon-random').attr('class') === 'fa-solid fa-shuffle active') {
+            randomSong();
+        }
+        else {
+            backSong();
+        }
+        audio.play()
+        renderPlayList();
+        scroolToActiveSong();
+    })
+
+    // xử lý random bài hát
+    $('.btn-random').click(() => {
+        $('#icon-random').toggleClass('active');
+    })
+
+    // xử lý lặp lại bài hát
+    $('.btn-repeat').click(() => {
+        $('#btn-repeat').toggleClass('activeRepeat');
+    })
+
+
+    // tự chuyển bài hát khi kết thúc
+    audio.onended = () => {
+        if ($('#icon-random').attr('class') === 'fa-solid fa-shuffle active') {
+            randomSong();
+        } else if ($('#btn-repeat').attr('class') === 'fa-solid fa-arrow-rotate-right activeRepeat') {
+            audio.load();
+        }
+        else {
+            nextSong();
+
+        }
+        audio.play()
+    }
 }
 
 
 // lấy ra bài hát đầu tiên
 function getFirstSong() {
     return songs[currentIndex];
+}
+
+// load dữ liệu bài hát đầu tiên lên UI
+function loadFirstSong() {
+    const firsSong = getFirstSong()
+    $('#header-title').html(firsSong.name);
+    $('#cd__thumb').css('background-image', 'url(' + firsSong.img + ')');
+    $('#audio').attr('src', firsSong.path)
 }
 
 // next bài hát
@@ -178,10 +234,36 @@ function backSong() {
 }
 
 
-// load dữ liệu bài hát đầu tiên lên UI
-function loadFirstSong() {
-    const firsSong = getFirstSong()
-    $('#header-title').html(firsSong.name);
-    $('#cd__thumb').css('background-image', 'url(' + firsSong.img + ')');
-    $('#audio').attr('src', firsSong.path)
+// ngẫu nhiên bài hát
+function randomSong() {
+    let newIndex = '';
+    do {
+        newIndex = Math.floor(Math.random() * songs.length);
+    } while (newIndex === currentIndex)
+    currentIndex = newIndex;
+    loadFirstSong();
 }
+
+function scroolToActiveSong() {
+    const locationSong = $('.song.active').offset();
+    const heightScreen = 630;
+    if (locationSong.top > heightScreen) {
+        $("html, body").animate({ scrollTop: locationSong.top - heightScreen }, 500);
+    } else {
+        $("html, body").animate({ scrollTop: $(".song.active").scrollTop() }, 500);
+
+    }
+}
+
+function clickPlaySong(index) {
+    currentIndex = index;
+    loadFirstSong();
+    audio.play();
+    renderPlayList();
+}
+
+
+
+
+
+
