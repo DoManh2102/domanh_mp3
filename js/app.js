@@ -1,11 +1,23 @@
 
 const songs = [
+    // {
+    //     name: 'Phương yêu vội thế?',
+    //     singer: 'Phương kuuu',
+    //     path: './music/anh-yeu-voi-the.mp3',
+    //     img: './img/phuongku.png'
+    // },
     {
-        name: 'Pháo hồng',
+        name: 'Anh yêu vội thế',
         singer: 'Đỗ Mạnh',
-        path: './music/phaohong.mp3',
+        path: './music/anh-yeu-voi-the.mp3',
         img: './img/domanh1.jpg'
     },
+    // {
+    //     name: 'Pháo hồng',
+    //     singer: 'Đỗ Mạnh',
+    //     path: './music/phaohong.mp3',
+    //     img: './img/domanh1.jpg'
+    // },
     {
         name: 'Mẹ anh bắt chia tay',
         singer: 'Miu Le',
@@ -246,7 +258,7 @@ function randomSong() {
 
 function scroolToActiveSong() {
     const locationSong = $('.song.active').offset();
-    const heightScreen = 630;
+    const heightScreen = 530;
     if (locationSong.top > heightScreen) {
         $("html, body").animate({ scrollTop: locationSong.top - heightScreen }, 500);
     } else {
